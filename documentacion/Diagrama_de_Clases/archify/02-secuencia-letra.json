@@ -1,0 +1,142 @@
+{
+ "schema_version": 1,
+ "diagram_type": "sequence",
+ "meta": {
+  "title": "Jugada de una letra",
+  "output": "02-secuencia-letra.html",
+  "quality_profile": "showcase",
+  "column_fit": "spread",
+  "viewBox": [
+   1060,
+   605
+  ]
+ },
+ "participants": [
+  {
+   "id": "jugador",
+   "type": "external",
+   "label": "Jugador",
+   "sublabel": "entrada"
+  },
+  {
+   "id": "ventana",
+   "type": "frontend",
+   "label": "VentanaPrincipal",
+   "sublabel": "VistaJuego"
+  },
+  {
+   "id": "controlador",
+   "type": "backend",
+   "label": "ControladorJuego",
+   "sublabel": "coordina"
+  },
+  {
+   "id": "partida",
+   "type": "backend",
+   "label": "Partida",
+   "sublabel": "modelo"
+  },
+  {
+   "id": "normalizador",
+   "type": "cloud",
+   "label": "Normalizador",
+   "sublabel": "util"
+  },
+  {
+   "id": "panel",
+   "type": "frontend",
+   "label": "PanelAhorcado",
+   "sublabel": "dibuja"
+  }
+ ],
+ "messages": [
+  {
+   "id": "m1",
+   "from": "jugador",
+   "to": "ventana",
+   "y": 180,
+   "label": "pulsa una letra",
+   "variant": "default"
+  },
+  {
+   "id": "m2",
+   "from": "ventana",
+   "to": "controlador",
+   "y": 214,
+   "label": "procesarLetra(letra)",
+   "variant": "emphasis"
+  },
+  {
+   "id": "m3",
+   "from": "controlador",
+   "to": "partida",
+   "y": 248,
+   "label": "adivinar(letra)",
+   "variant": "emphasis"
+  },
+  {
+   "id": "m4",
+   "from": "partida",
+   "to": "normalizador",
+   "y": 282,
+   "label": "normalizarLetra(letra)",
+   "variant": "default"
+  },
+  {
+   "id": "m5",
+   "from": "normalizador",
+   "to": "partida",
+   "y": 316,
+   "label": "letra normalizada",
+   "variant": "return"
+  },
+  {
+   "id": "m6",
+   "from": "partida",
+   "to": "controlador",
+   "y": 350,
+   "label": "ResultadoLetra",
+   "variant": "return"
+  },
+  {
+   "id": "m7",
+   "from": "controlador",
+   "to": "ventana",
+   "y": 384,
+   "label": "mostrarMensaje(texto)",
+   "variant": "default"
+  },
+  {
+   "id": "m8",
+   "from": "controlador",
+   "to": "ventana",
+   "y": 418,
+   "label": "actualizar(partida)",
+   "variant": "emphasis"
+  },
+  {
+   "id": "m9",
+   "from": "ventana",
+   "to": "panel",
+   "y": 452,
+   "label": "setErrores(getErrores())",
+   "variant": "default"
+  },
+  {
+   "id": "m10",
+   "from": "controlador",
+   "to": "ventana",
+   "y": 486,
+   "label": "mostrarFin(partida)",
+   "variant": "dashed"
+  },
+  {
+   "id": "m11",
+   "from": "ventana",
+   "to": "jugador",
+   "y": 520,
+   "label": "diálogo: ganó o perdió",
+   "variant": "return"
+  }
+ ]
+}

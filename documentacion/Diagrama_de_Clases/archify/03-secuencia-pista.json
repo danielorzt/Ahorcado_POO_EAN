@@ -1,0 +1,191 @@
+{
+ "schema_version": 1,
+ "diagram_type": "sequence",
+ "meta": {
+  "title": "Uso de una pista (polimorfismo)",
+  "output": "03-secuencia-pista.html",
+  "quality_profile": "showcase",
+  "column_fit": "spread",
+  "viewBox": [
+   1340,
+   745
+  ]
+ },
+ "participants": [
+  {
+   "id": "jugador",
+   "type": "external",
+   "label": "Jugador"
+  },
+  {
+   "id": "ventana",
+   "type": "frontend",
+   "label": "VentanaPrincipal"
+  },
+  {
+   "id": "controlador",
+   "type": "backend",
+   "label": "ControladorJuego"
+  },
+  {
+   "id": "partida",
+   "type": "backend",
+   "label": "Partida"
+  },
+  {
+   "id": "pista",
+   "type": "backend",
+   "label": "Pista"
+  },
+  {
+   "id": "pcat",
+   "type": "database",
+   "label": "PistaCategoria"
+  },
+  {
+   "id": "plet",
+   "type": "database",
+   "label": "PistaLetra"
+  },
+  {
+   "id": "ptex",
+   "type": "database",
+   "label": "PistaTexto"
+  }
+ ],
+ "messages": [
+  {
+   "id": "m1",
+   "from": "jugador",
+   "to": "ventana",
+   "y": 180,
+   "label": "pulsa una pista",
+   "variant": "default"
+  },
+  {
+   "id": "m2",
+   "from": "ventana",
+   "to": "controlador",
+   "y": 212,
+   "label": "usarPista(indice)",
+   "variant": "emphasis"
+  },
+  {
+   "id": "m3",
+   "from": "controlador",
+   "to": "partida",
+   "y": 244,
+   "label": "usarPista(indice)",
+   "variant": "emphasis"
+  },
+  {
+   "id": "m4",
+   "from": "partida",
+   "to": "pista",
+   "y": 276,
+   "label": "usar(partida)",
+   "variant": "emphasis",
+   "note": "marca usada"
+  },
+  {
+   "id": "m5",
+   "from": "pista",
+   "to": "pcat",
+   "y": 308,
+   "label": "obtener(partida)",
+   "variant": "default",
+   "note": "alternativa A"
+  },
+  {
+   "id": "m6",
+   "from": "pcat",
+   "to": "pista",
+   "y": 340,
+   "label": "Categoría: X",
+   "variant": "return"
+  },
+  {
+   "id": "m7",
+   "from": "pista",
+   "to": "plet",
+   "y": 372,
+   "label": "obtener(partida)",
+   "variant": "default",
+   "note": "alternativa B"
+  },
+  {
+   "id": "m8",
+   "from": "plet",
+   "to": "partida",
+   "y": 404,
+   "label": "revelarLetra(letra)",
+   "variant": "dashed",
+   "note": "sin error"
+  },
+  {
+   "id": "m9",
+   "from": "plet",
+   "to": "pista",
+   "y": 436,
+   "label": "Se reveló la letra: X",
+   "variant": "return"
+  },
+  {
+   "id": "m10",
+   "from": "pista",
+   "to": "ptex",
+   "y": 468,
+   "label": "obtener(partida)",
+   "variant": "default",
+   "note": "alternativa C"
+  },
+  {
+   "id": "m11",
+   "from": "ptex",
+   "to": "pista",
+   "y": 500,
+   "label": "getPista()",
+   "variant": "return"
+  },
+  {
+   "id": "m12",
+   "from": "pista",
+   "to": "partida",
+   "y": 532,
+   "label": "texto de la pista",
+   "variant": "return"
+  },
+  {
+   "id": "m13",
+   "from": "partida",
+   "to": "controlador",
+   "y": 564,
+   "label": "texto o null",
+   "variant": "return"
+  },
+  {
+   "id": "m14",
+   "from": "controlador",
+   "to": "ventana",
+   "y": 596,
+   "label": "mostrarMensaje(Pista: texto)",
+   "variant": "default"
+  },
+  {
+   "id": "m15",
+   "from": "controlador",
+   "to": "ventana",
+   "y": 628,
+   "label": "actualizar(partida)",
+   "variant": "emphasis"
+  },
+  {
+   "id": "m16",
+   "from": "ventana",
+   "to": "jugador",
+   "y": 660,
+   "label": "muestra la pista",
+   "variant": "return"
+  }
+ ]
+}

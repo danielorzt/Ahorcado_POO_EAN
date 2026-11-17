@@ -1,0 +1,481 @@
+%% Respaldo en Mermaid del diagrama de clases (fuente principal: Diagrama_de_Clases.puml)
+%% Limitaciones de Mermaid frente a PlantUML:
+%%  - Se omiten los valores iniciales de constantes (p. ej. MAX_ERRORES = 7, LIENZO_ANCHO = 300); estan en el .puml.
+%%  - No hay {readOnly}: los atributos final se listan igual que los demas.
+%%  - Los genericos se escriben con ~ (ArrayList~Palabra~ equivale a ArrayList<Palabra>).
+%%  - static se marca con $ al final del miembro y abstract con * (si el visor lo soporta).
+%%  - La clase anidada VentanaPrincipal.OrdenTabulacion y PruebasAutomaticas.VistaFalsa
+%%    se dibujan como OrdenTabulacion y VistaFalsa, unidas por composicion/anidacion (*--).
+%%  - Las notas sobre multiplicidades 8 y 25: NO estan en el codigo, salen de DatosPalabras.DATOS
+%%    (200 palabras = 8 categorias x 25).
+%%  - Los paquetes se dibujan con namespace (Mermaid 10.x o superior). Si tu visor es antiguo,
+%%    borra las lineas namespace y las llaves de cierre.
+classDiagram
+direction TB
+
+namespace JDK {
+    class JFrame
+    class JPanel
+    class FocusTraversalPolicy {
+        <<abstract>>
+    }
+}
+
+namespace modelo {
+    class Dificultad {
+        <<enumeration>>
+        FACIL
+        MEDIO
+        DIFICIL
+        -String etiqueta
+        -Dificultad(String etiqueta)
+        +getEtiqueta() String
+        +paraLongitud(int longitud)$ Dificultad
+        +toString() String
+    }
+    class EstadoJuego {
+        <<enumeration>>
+        EN_CURSO
+        GANADA
+        PERDIDA
+    }
+    class ResultadoLetra {
+        <<enumeration>>
+        ACERTADA
+        FALLADA
+        REPETIDA
+        INVALIDA
+        PARTIDA_TERMINADA
+    }
+    class Palabra {
+        <<final>>
+        -String texto
+        -String textoOriginal
+        -String pista
+        -String categoria
+        -Dificultad dificultad
+        +Palabra(String textoOriginal, String pista, String categoria)
+        +getTexto() String
+        +getTextoOriginal() String
+        +getPista() String
+        +getCategoria() String
+        +getDificultad() Dificultad
+        +longitud() int
+        +contiene(char letra) boolean
+        +equals(Object otro) boolean
+        +hashCode() int
+        +toString() String
+    }
+    class Categoria {
+        -String nombre
+        -ArrayList~Palabra~ palabras
+        +Categoria(String nombre)
+        +agregar(Palabra p) void
+        +getPalabras() ArrayList~Palabra~
+        +obtenerPorDificultad(Dificultad d) ArrayList~Palabra~
+        +tamano() int
+        +getNombre() String
+    }
+    class BancoPalabras {
+        -ArrayList~Categoria~ categorias
+        -ArrayList~Palabra~ usadas
+        -Random azar
+        +BancoPalabras()
+        -buscarOCrearCategoria(String nombre) Categoria
+        +elegirAleatoria(Dificultad dificultad) Palabra
+        +totalPalabras() int
+        +getCategorias() ArrayList~Categoria~
+        +resumenPorCategoria() String
+        +contarPorDificultad(Dificultad d) int
+        +contiene(String textoNormalizado) boolean
+    }
+    class DatosPalabras {
+        <<final>>
+        ~String[][] DATOS$
+        -DatosPalabras()
+    }
+    class Pista {
+        <<abstract>>
+        -String nombre
+        -String descripcion
+        -boolean usada
+        #Pista(String nombre, String descripcion)
+        +usar(Partida partida) String
+        +obtener(Partida partida)* String
+        +isUsada() boolean
+        +getNombre() String
+        +getDescripcion() String
+    }
+    class PistaCategoria {
+        +PistaCategoria()
+        +obtener(Partida p) String
+    }
+    class PistaLetra {
+        -Random azar
+        +PistaLetra()
+        +obtener(Partida p) String
+    }
+    class PistaTexto {
+        +PistaTexto()
+        +obtener(Partida p) String
+    }
+    class Partida {
+        +int MAX_ERRORES$
+        -Palabra palabraSecreta
+        -ArrayList~Character~ letrasCorrectas
+        -ArrayList~Character~ letrasIncorrectas
+        -ArrayList~Pista~ pistas
+        -ArrayList~String~ pistasObtenidas
+        -EstadoJuego estado
+        +Partida(Palabra palabra)
+        +adivinar(char letra) ResultadoLetra
+        +revelarLetra(char letra) void
+        +usarPista(int indice) String
+        +pistaDisponible(int indice) boolean
+        +pistasRestantes() int
+        +getErrores() int
+        +intentosRestantes() int
+        +palabraOculta() String
+        +estaCompleta() boolean
+        +getPalabra() Palabra
+        +getEstado() EstadoJuego
+        +getLetrasCorrectas() ArrayList~Character~
+        +getLetrasIncorrectas() ArrayList~Character~
+        +getPistasObtenidas() ArrayList~String~
+        -actualizarEstado() void
+    }
+}
+
+namespace controlador {
+    class VistaJuego {
+        <<interface>>
+        +actualizar(Partida partida)* void
+        +mostrarFin(Partida partida)* void
+        +mostrarMensaje(String mensaje)* void
+    }
+    class ControladorJuego {
+        -BancoPalabras banco
+        -VistaJuego vista
+        -Partida partida
+        +ControladorJuego(BancoPalabras banco)
+        +setVista(VistaJuego vista) void
+        +iniciarNuevaPartida(Dificultad dificultad) void
+        +iniciarPartidaConPalabra(Palabra palabra) void
+        +procesarLetra(char letra) void
+        +usarPista(int indice) void
+        +getPartida() Partida
+        +salir() void
+        -refrescar() void
+        -avisar(String mensaje) void
+    }
+}
+
+namespace vista {
+    class Estilo {
+        <<final>>
+        +Color FONDO$
+        +Color PRIMARIO$
+        +Color ACENTO$
+        +Color TEXTO$
+        +Color ACIERTO$
+        +Color ERROR$
+        +Color TARJETA$
+        +Color BORDE$
+        +Color MADERA$
+        +Color CUERDA$
+        +Font TITULO$
+        +Font SUBTITULO$
+        +Font NORMAL$
+        +Font BOTON$
+        +Font TECLA$
+        +Font PALABRA$
+        -Estilo()
+        +configurarLookAndFeel()$ void
+        +margen(int px)$ Border
+        +tarjeta(String titulo)$ Border
+        +estilizarBoton(JButton boton)$ void
+    }
+    class ParteCuerpo {
+        <<abstract>>
+        -String nombre
+        -int origenX
+        -int origenY
+        -double escala
+        #ParteCuerpo(String nombre, int origenX, int origenY, double escala)
+        +dibujar(Graphics2D g)* void
+        +getNombre() String
+        #px(double desplazamiento) int
+        #py(double desplazamiento) int
+        #largo(double valor) int
+        #grosor(double valor) float
+    }
+    class Cabeza {
+        +Cabeza(int origenX, int origenY, double escala)
+        +dibujar(Graphics2D g) void
+    }
+    class Torso {
+        +Torso(int origenX, int origenY, double escala)
+        +dibujar(Graphics2D g) void
+    }
+    class BrazoDerecho {
+        +BrazoDerecho(int origenX, int origenY, double escala)
+        +dibujar(Graphics2D g) void
+    }
+    class BrazoIzquierdo {
+        +BrazoIzquierdo(int origenX, int origenY, double escala)
+        +dibujar(Graphics2D g) void
+    }
+    class PiernaDerecha {
+        +PiernaDerecha(int origenX, int origenY, double escala)
+        +dibujar(Graphics2D g) void
+    }
+    class PiernaIzquierda {
+        +PiernaIzquierda(int origenX, int origenY, double escala)
+        +dibujar(Graphics2D g) void
+    }
+    class Cuerda {
+        +Cuerda(int origenX, int origenY, double escala)
+        +dibujar(Graphics2D g) void
+    }
+    class PanelAhorcado {
+        -long serialVersionUID$
+        -int LIENZO_ANCHO$
+        -int LIENZO_ALTO$
+        -int ORIGEN_X$
+        -int ORIGEN_Y$
+        -ArrayList~ParteCuerpo~ partes
+        -int errores
+        +PanelAhorcado()
+        +setErrores(int n) void
+        +getErrores() int
+        +getNombresPartes() ArrayList~String~
+        #paintComponent(Graphics g) void
+        -dibujarHorca(Graphics2D g) void
+    }
+    class PanelTeclado {
+        -long serialVersionUID$
+        +String LETRAS$
+        -ArrayList~JButton~ botones
+        -Consumer~Character~ escuchaLetra
+        +PanelTeclado()
+        +setEscuchaLetra(Consumer~Character~ escucha) void
+        +setEnabledLetras(ArrayList~Character~ usadas, boolean activo) void
+        +getBotones() ArrayList~JButton~
+    }
+    class PanelPistas {
+        -long serialVersionUID$
+        -JButton[] botones
+        -JLabel etiquetaRestantes
+        -JTextArea areaPistas
+        -Consumer~Integer~ escuchaPista
+        +PanelPistas()
+        +setEscuchaPista(Consumer~Integer~ escucha) void
+        +setPistaUsada(int i) void
+        +setPistaDisponible(int i, boolean disponible) void
+        +setPistasRestantes(int n) void
+        +setTextoPistas(ArrayList~String~ textos) void
+        +getBotones() ArrayList~JButton~
+    }
+    class PanelEstado {
+        -long serialVersionUID$
+        -JLabel etiquetaPalabra
+        -JLabel etiquetaDificultad
+        -JLabel etiquetaCorrectas
+        -JLabel etiquetaIncorrectas
+        -JLabel etiquetaIntentos
+        +PanelEstado()
+        +actualizar(Partida p) void
+        -unir(ArrayList~Character~ letras) String
+    }
+    class VentanaPrincipal {
+        -long serialVersionUID$
+        -ControladorJuego controlador
+        -PanelAhorcado panelAhorcado
+        -PanelEstado panelEstado
+        -PanelPistas panelPistas
+        -PanelTeclado panelTeclado
+        -JLabel etiquetaMensaje
+        -JComboBox~String~ comboDificultad
+        -JButton botonNueva
+        -JButton botonAyuda
+        +VentanaPrincipal(ControladorJuego controlador)
+        -crearMenu() JMenuBar
+        -crearBarraSuperior() JPanel
+        -crearCentro() JPanel
+        -crearBarraMensaje() JPanel
+        -conectarEventos() void
+        -configurarAccesibilidad() void
+        -configurarTabulacion() void
+        -instalarTecladoFisico() void
+        -nuevaPartida() void
+        -dificultadSeleccionada() Dificultad
+        -mostrarAyuda() void
+        +actualizar(Partida partida) void
+        +mostrarFin(Partida partida) void
+        +mostrarMensaje(String mensaje) void
+        +crearDialogoFin(Partida partida) JDialog
+    }
+    class OrdenTabulacion {
+        <<anidada>>
+        -ArrayList~Component~ orden
+        ~OrdenTabulacion(ArrayList~Component~ orden)
+        -buscar(Component actual, int paso) Component
+        +getComponentAfter(Container raiz, Component actual) Component
+        +getComponentBefore(Container raiz, Component actual) Component
+        +getFirstComponent(Container raiz) Component
+        +getLastComponent(Container raiz) Component
+        +getDefaultComponent(Container raiz) Component
+    }
+}
+
+namespace util {
+    class Normalizador {
+        <<final>>
+        -Normalizador()
+        +normalizar(String s)$ String
+        +normalizarLetra(char c)$ char
+        +esLetraValida(char c)$ boolean
+    }
+    class VerificadorBanco {
+        <<final>>
+        -int TOTAL_ESPERADO$
+        -int CATEGORIAS_ESPERADAS$
+        -int POR_CATEGORIA$
+        -VerificadorBanco()
+        +main(String[] args)$ void
+    }
+    class PruebasAutomaticas {
+        <<final>>
+        -int total$
+        -int fallos$
+        -PruebasAutomaticas()
+        +main(String[] args)$ void
+        -comprobar(String nombre, boolean condicion)$ void
+        -palabraPrueba(String texto)$ Palabra
+        -pruebasNormalizador()$ void
+        -pruebasPalabra()$ void
+        -pruebasBanco()$ void
+        -pruebasPartida()$ void
+        -pruebasPistas()$ void
+        -pruebasControlador()$ void
+        -pruebasDibujo()$ void
+    }
+    class VistaFalsa {
+        <<anidada>>
+        ~int actualizaciones
+        ~int finales
+        ~String ultimoMensaje
+        +actualizar(Partida partida) void
+        +mostrarFin(Partida partida) void
+        +mostrarMensaje(String mensaje) void
+    }
+    class GeneradorCapturas {
+        <<final>>
+        -Palabra PALABRA$
+        -GeneradorCapturas()
+        +main(String[] args)$ void
+        -generar(Path carpeta)$ void
+        -guardar(Object contenedor, Path archivo)$ void
+    }
+}
+
+class Main {
+    +main(String[] args)$ void
+}
+
+%% Herencia e interfaces
+Pista <|-- PistaCategoria
+Pista <|-- PistaLetra
+Pista <|-- PistaTexto
+ParteCuerpo <|-- Cabeza
+ParteCuerpo <|-- Torso
+ParteCuerpo <|-- BrazoDerecho
+ParteCuerpo <|-- BrazoIzquierdo
+ParteCuerpo <|-- PiernaDerecha
+ParteCuerpo <|-- PiernaIzquierda
+ParteCuerpo <|-- Cuerda
+JPanel <|-- PanelAhorcado
+JPanel <|-- PanelTeclado
+JPanel <|-- PanelPistas
+JPanel <|-- PanelEstado
+JFrame <|-- VentanaPrincipal
+FocusTraversalPolicy <|-- OrdenTabulacion
+VistaJuego <|.. VentanaPrincipal
+VistaJuego <|.. VistaFalsa
+
+%% Asociaciones con multiplicidad
+BancoPalabras "1" *-- "8" Categoria : categorias
+Categoria "1" *-- "25" Palabra : palabras
+BancoPalabras "1" o-- "0..200" Palabra : usadas
+Palabra "*" --> "1" Dificultad : dificultad
+Partida "1" *-- "3" Pista : pistas
+Partida "1" --> "1" Palabra : palabraSecreta
+Partida "1" --> "1" EstadoJuego : estado
+ControladorJuego "1" --> "1" BancoPalabras : banco
+ControladorJuego "1" --> "0..1" Partida : partida
+ControladorJuego "1" --> "0..1" VistaJuego : vista
+VentanaPrincipal "1" --> "1" ControladorJuego : controlador
+VentanaPrincipal "1" *-- "1" PanelAhorcado
+VentanaPrincipal "1" *-- "1" PanelEstado
+VentanaPrincipal "1" *-- "1" PanelPistas
+VentanaPrincipal "1" *-- "1" PanelTeclado
+VentanaPrincipal "1" *-- "1" OrdenTabulacion : clase anidada
+PanelAhorcado "1" *-- "7" ParteCuerpo : partes
+PruebasAutomaticas "1" *-- "1" VistaFalsa : clase anidada
+
+%% Dependencias
+BancoPalabras ..> DatosPalabras : lee DATOS
+BancoPalabras ..> Dificultad
+Palabra ..> Normalizador
+Partida ..> ResultadoLetra : devuelve
+Partida ..> Normalizador
+Pista ..> Partida : usar(partida)
+ControladorJuego ..> Dificultad
+ControladorJuego ..> Palabra
+ControladorJuego ..> ResultadoLetra
+ControladorJuego ..> EstadoJuego
+ControladorJuego ..> Normalizador
+VentanaPrincipal ..> Partida
+VentanaPrincipal ..> Dificultad
+VentanaPrincipal ..> EstadoJuego
+VentanaPrincipal ..> Normalizador
+VentanaPrincipal ..> Estilo
+PanelEstado ..> Partida
+PanelEstado ..> Estilo
+PanelPistas ..> Estilo
+PanelTeclado ..> Estilo
+PanelAhorcado ..> Estilo
+Cabeza ..> Estilo
+Torso ..> Estilo
+BrazoDerecho ..> Estilo
+BrazoIzquierdo ..> Estilo
+PiernaDerecha ..> Estilo
+PiernaIzquierda ..> Estilo
+Cuerda ..> Estilo
+VerificadorBanco ..> BancoPalabras
+VerificadorBanco ..> Categoria
+VerificadorBanco ..> Dificultad
+PruebasAutomaticas ..> BancoPalabras
+PruebasAutomaticas ..> Partida
+PruebasAutomaticas ..> Palabra
+PruebasAutomaticas ..> Pista
+PruebasAutomaticas ..> PistaCategoria
+PruebasAutomaticas ..> PistaLetra
+PruebasAutomaticas ..> PistaTexto
+PruebasAutomaticas ..> ControladorJuego
+PruebasAutomaticas ..> PanelAhorcado
+PruebasAutomaticas ..> Normalizador
+GeneradorCapturas ..> ControladorJuego
+GeneradorCapturas ..> VentanaPrincipal
+GeneradorCapturas ..> BancoPalabras
+GeneradorCapturas ..> Palabra
+GeneradorCapturas ..> VistaJuego : clase anonima
+GeneradorCapturas ..> Estilo
+Main ..> BancoPalabras
+Main ..> ControladorJuego
+Main ..> VentanaPrincipal
+Main ..> VerificadorBanco
+Main ..> Estilo
+
+note for BancoPalabras "Las multiplicidades 8 y 25 salen de los datos (DatosPalabras.DATOS = 200 palabras, 8 categorias x 25), no de una constante en el codigo."
+note for PanelAhorcado "7 partes: Cabeza, Torso, BrazoDerecho, BrazoIzquierdo, PiernaDerecha, PiernaIzquierda, Cuerda."

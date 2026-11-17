@@ -1,0 +1,287 @@
+@startuml Diagrama_vista_controlador
+' Diagrama de los paquetes controlador y vista (MVC: Controlador + Vista).
+' Notacion: + public, - private, # protegido, ~ paquete, {static}, {abstract},
+' {readOnly} = atributo final.
+title Paquetes controlador y vista - Juego del Ahorcado
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 12
+skinparam ArrowColor #2C3E70
+skinparam class {
+  BackgroundColor #F7F9FF
+  BorderColor #2C3E70
+}
+skinparam note {
+  BackgroundColor #FFF8DC
+  BorderColor #B8860B
+}
+hide empty members
+
+package "Java Swing / AWT (JDK)" <<Rectangle>> {
+  class JFrame <<javax.swing>>
+  class JPanel <<javax.swing>>
+  abstract class FocusTraversalPolicy <<java.awt>>
+}
+
+' Clases del modelo usadas (solo referencia; ver Diagrama_modelo.puml)
+class BancoPalabras <<modelo>>
+class Partida <<modelo>>
+class Palabra <<modelo>>
+class Dificultad <<modelo>>
+class EstadoJuego <<modelo>>
+class ResultadoLetra <<modelo>>
+class Normalizador <<util>>
+
+package controlador {
+
+  interface VistaJuego <<interface>> {
+    +{abstract} actualizar(partida : Partida) : void
+    +{abstract} mostrarFin(partida : Partida) : void
+    +{abstract} mostrarMensaje(mensaje : String) : void
+  }
+
+  class ControladorJuego {
+    -banco : BancoPalabras {readOnly}
+    -vista : VistaJuego
+    -partida : Partida
+    +ControladorJuego(banco : BancoPalabras)
+    +setVista(vista : VistaJuego) : void
+    +iniciarNuevaPartida(dificultad : Dificultad) : void
+    +iniciarPartidaConPalabra(palabra : Palabra) : void
+    +procesarLetra(letra : char) : void
+    +usarPista(indice : int) : void
+    +getPartida() : Partida
+    +salir() : void
+    -refrescar() : void
+    -avisar(mensaje : String) : void
+  }
+}
+
+package vista {
+
+  class Estilo <<final>> {
+    +{static} FONDO : Color {readOnly}
+    +{static} PRIMARIO : Color {readOnly}
+    +{static} ACENTO : Color {readOnly}
+    +{static} TEXTO : Color {readOnly}
+    +{static} ACIERTO : Color {readOnly}
+    +{static} ERROR : Color {readOnly}
+    +{static} TARJETA : Color {readOnly}
+    +{static} BORDE : Color {readOnly}
+    +{static} MADERA : Color {readOnly}
+    +{static} CUERDA : Color {readOnly}
+    +{static} TITULO : Font {readOnly}
+    +{static} SUBTITULO : Font {readOnly}
+    +{static} NORMAL : Font {readOnly}
+    +{static} BOTON : Font {readOnly}
+    +{static} TECLA : Font {readOnly}
+    +{static} PALABRA : Font {readOnly}
+    -Estilo()
+    +{static} configurarLookAndFeel() : void
+    +{static} margen(px : int) : Border
+    +{static} tarjeta(titulo : String) : Border
+    +{static} estilizarBoton(boton : JButton) : void
+  }
+
+  abstract class ParteCuerpo <<abstract>> {
+    -nombre : String {readOnly}
+    -origenX : int {readOnly}
+    -origenY : int {readOnly}
+    -escala : double {readOnly}
+    #ParteCuerpo(nombre : String, origenX : int, origenY : int, escala : double)
+    +{abstract} dibujar(g : Graphics2D) : void
+    +getNombre() : String
+    #px(desplazamiento : double) : int
+    #py(desplazamiento : double) : int
+    #largo(valor : double) : int
+    #grosor(valor : double) : float
+  }
+
+  class Cabeza {
+    +Cabeza(origenX : int, origenY : int, escala : double)
+    +dibujar(g : Graphics2D) : void
+  }
+  class Torso {
+    +Torso(origenX : int, origenY : int, escala : double)
+    +dibujar(g : Graphics2D) : void
+  }
+  class BrazoDerecho {
+    +BrazoDerecho(origenX : int, origenY : int, escala : double)
+    +dibujar(g : Graphics2D) : void
+  }
+  class BrazoIzquierdo {
+    +BrazoIzquierdo(origenX : int, origenY : int, escala : double)
+    +dibujar(g : Graphics2D) : void
+  }
+  class PiernaDerecha {
+    +PiernaDerecha(origenX : int, origenY : int, escala : double)
+    +dibujar(g : Graphics2D) : void
+  }
+  class PiernaIzquierda {
+    +PiernaIzquierda(origenX : int, origenY : int, escala : double)
+    +dibujar(g : Graphics2D) : void
+  }
+  class Cuerda {
+    +Cuerda(origenX : int, origenY : int, escala : double)
+    +dibujar(g : Graphics2D) : void
+  }
+
+  class PanelAhorcado {
+    -{static} serialVersionUID : long {readOnly}
+    -{static} LIENZO_ANCHO : int = 300 {readOnly}
+    -{static} LIENZO_ALTO : int = 400 {readOnly}
+    -{static} ORIGEN_X : int = 210 {readOnly}
+    -{static} ORIGEN_Y : int = 120 {readOnly}
+    -partes : ArrayList<ParteCuerpo> {readOnly}
+    -errores : int
+    +PanelAhorcado()
+    +setErrores(n : int) : void
+    +getErrores() : int
+    +getNombresPartes() : ArrayList<String>
+    #paintComponent(g : Graphics) : void
+    -dibujarHorca(g : Graphics2D) : void
+  }
+
+  class PanelTeclado {
+    -{static} serialVersionUID : long {readOnly}
+    +{static} LETRAS : String {readOnly}
+    -botones : ArrayList<JButton> {readOnly}
+    -escuchaLetra : Consumer<Character>
+    +PanelTeclado()
+    +setEscuchaLetra(escucha : Consumer<Character>) : void
+    +setEnabledLetras(usadas : ArrayList<Character>, activo : boolean) : void
+    +getBotones() : ArrayList<JButton>
+  }
+
+  class PanelPistas {
+    -{static} serialVersionUID : long {readOnly}
+    -botones : JButton[3] {readOnly}
+    -etiquetaRestantes : JLabel {readOnly}
+    -areaPistas : JTextArea {readOnly}
+    -escuchaPista : Consumer<Integer>
+    +PanelPistas()
+    +setEscuchaPista(escucha : Consumer<Integer>) : void
+    +setPistaUsada(i : int) : void
+    +setPistaDisponible(i : int, disponible : boolean) : void
+    +setPistasRestantes(n : int) : void
+    +setTextoPistas(textos : ArrayList<String>) : void
+    +getBotones() : ArrayList<JButton>
+  }
+
+  class PanelEstado {
+    -{static} serialVersionUID : long {readOnly}
+    -etiquetaPalabra : JLabel {readOnly}
+    -etiquetaDificultad : JLabel {readOnly}
+    -etiquetaCorrectas : JLabel {readOnly}
+    -etiquetaIncorrectas : JLabel {readOnly}
+    -etiquetaIntentos : JLabel {readOnly}
+    +PanelEstado()
+    +actualizar(p : Partida) : void
+    -unir(letras : ArrayList<Character>) : String
+  }
+
+  class VentanaPrincipal {
+    -{static} serialVersionUID : long {readOnly}
+    -controlador : ControladorJuego {readOnly}
+    -panelAhorcado : PanelAhorcado {readOnly}
+    -panelEstado : PanelEstado {readOnly}
+    -panelPistas : PanelPistas {readOnly}
+    -panelTeclado : PanelTeclado {readOnly}
+    -etiquetaMensaje : JLabel {readOnly}
+    -comboDificultad : JComboBox<String> {readOnly}
+    -botonNueva : JButton {readOnly}
+    -botonAyuda : JButton {readOnly}
+    +VentanaPrincipal(controlador : ControladorJuego)
+    -crearMenu() : JMenuBar
+    -crearBarraSuperior() : JPanel
+    -crearCentro() : JPanel
+    -crearBarraMensaje() : JPanel
+    -conectarEventos() : void
+    -configurarAccesibilidad() : void
+    -configurarTabulacion() : void
+    -instalarTecladoFisico() : void
+    -nuevaPartida() : void
+    -dificultadSeleccionada() : Dificultad
+    -mostrarAyuda() : void
+    +actualizar(partida : Partida) : void
+    +mostrarFin(partida : Partida) : void
+    +mostrarMensaje(mensaje : String) : void
+    +crearDialogoFin(partida : Partida) : JDialog
+  }
+
+  class "VentanaPrincipal.OrdenTabulacion" as OrdenTabulacion <<private static>> {
+    -orden : ArrayList<Component> {readOnly}
+    ~OrdenTabulacion(orden : ArrayList<Component>)
+    -buscar(actual : Component, paso : int) : Component
+    +getComponentAfter(raiz : Container, actual : Component) : Component
+    +getComponentBefore(raiz : Container, actual : Component) : Component
+    +getFirstComponent(raiz : Container) : Component
+    +getLastComponent(raiz : Container) : Component
+    +getDefaultComponent(raiz : Container) : Component
+  }
+}
+
+' Herencia e interfaces
+ParteCuerpo <|-- Cabeza
+ParteCuerpo <|-- Torso
+ParteCuerpo <|-- BrazoDerecho
+ParteCuerpo <|-- BrazoIzquierdo
+ParteCuerpo <|-- PiernaDerecha
+ParteCuerpo <|-- PiernaIzquierda
+ParteCuerpo <|-- Cuerda
+JPanel <|-- PanelAhorcado
+JPanel <|-- PanelTeclado
+JPanel <|-- PanelPistas
+JPanel <|-- PanelEstado
+JFrame <|-- VentanaPrincipal
+FocusTraversalPolicy <|-- OrdenTabulacion
+VistaJuego <|.. VentanaPrincipal
+
+' Asociaciones con multiplicidad
+ControladorJuego "1" --> "1" BancoPalabras : banco
+ControladorJuego "1" --> "0..1" Partida : partida
+ControladorJuego "1" --> "0..1" VistaJuego : vista
+VentanaPrincipal "1" --> "1" ControladorJuego : controlador
+VentanaPrincipal "1" *-- "1" PanelAhorcado
+VentanaPrincipal "1" *-- "1" PanelEstado
+VentanaPrincipal "1" *-- "1" PanelPistas
+VentanaPrincipal "1" *-- "1" PanelTeclado
+VentanaPrincipal +-- OrdenTabulacion
+PanelAhorcado "1" *-- "7" ParteCuerpo : partes
+
+' Dependencias
+ControladorJuego ..> Dificultad
+ControladorJuego ..> Palabra
+ControladorJuego ..> ResultadoLetra
+ControladorJuego ..> EstadoJuego
+ControladorJuego ..> Normalizador
+VentanaPrincipal ..> Partida
+VentanaPrincipal ..> Dificultad
+VentanaPrincipal ..> EstadoJuego
+VentanaPrincipal ..> Normalizador
+VentanaPrincipal ..> Estilo
+PanelEstado ..> Partida
+PanelEstado ..> Estilo
+PanelPistas ..> Estilo
+PanelTeclado ..> Estilo
+PanelAhorcado ..> Estilo
+Cabeza ..> Estilo
+Torso ..> Estilo
+BrazoDerecho ..> Estilo
+BrazoIzquierdo ..> Estilo
+PiernaDerecha ..> Estilo
+PiernaIzquierda ..> Estilo
+Cuerda ..> Estilo
+
+note bottom of PanelAhorcado
+  7 = Cabeza, Torso, BrazoDerecho, BrazoIzquierdo,
+  PiernaDerecha, PiernaIzquierda, Cuerda (en ese orden).
+  POLIMORFISMO: partes.get(i).dibujar(g2)
+end note
+
+note bottom of VistaJuego
+  El controlador solo conoce esta interfaz, no Swing.
+end note
+@enduml

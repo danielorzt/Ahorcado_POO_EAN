@@ -1,0 +1,139 @@
+{
+ "schema_version": 1,
+ "diagram_type": "lifecycle",
+ "meta": {
+  "title": "Ciclo de vida de una Partida (EstadoJuego)",
+  "output": "04-ciclo-partida.html",
+  "quality_profile": "showcase",
+  "viewBox": [
+   1060,
+   680
+  ]
+ },
+ "lanes": [
+  {
+   "id": "main",
+   "label": "Ciclo de la partida"
+  },
+  {
+   "id": "fin",
+   "label": "Estados terminales"
+  }
+ ],
+ "states": [
+  {
+   "id": "nueva",
+   "type": "start",
+   "label": "Nueva Partida",
+   "sublabel": "new Partida(palabra)",
+   "lane": "main",
+   "col": 0,
+   "step": "01"
+  },
+  {
+   "id": "encurso",
+   "type": "active",
+   "label": "EN_CURSO",
+   "sublabel": "estado inicial",
+   "lane": "main",
+   "col": 2,
+   "step": "02"
+  },
+  {
+   "id": "ganada",
+   "type": "success",
+   "label": "GANADA",
+   "sublabel": "palabra completa",
+   "lane": "main",
+   "col": 4,
+   "step": "03"
+  },
+  {
+   "id": "perdida",
+   "type": "failure",
+   "label": "PERDIDA",
+   "sublabel": "7 errores",
+   "lane": "fin",
+   "col": 0
+  },
+  {
+   "id": "guardia",
+   "type": "neutral",
+   "label": "Entrada ignorada",
+   "sublabel": "PARTIDA_TERMINADA",
+   "lane": "fin",
+   "col": 2
+  }
+ ],
+ "transitions": [
+  {
+   "id": "t-inicio",
+   "from": "nueva",
+   "to": "encurso",
+   "label": "constructor",
+   "variant": "emphasis"
+  },
+  {
+   "id": "t-gana",
+   "from": "encurso",
+   "to": "ganada",
+   "label": "completa palabra",
+   "variant": "emphasis"
+  },
+  {
+   "id": "t-pierde",
+   "from": "encurso",
+   "to": "perdida",
+   "label": "7.º error",
+   "variant": "security",
+   "labelAt": [
+    402,
+    202
+   ]
+  },
+  {
+   "id": "t-guardia-g",
+   "from": "ganada",
+   "to": "guardia",
+   "label": "adivinar",
+   "variant": "dashed",
+   "labelAt": [
+    710,
+    202
+   ]
+  },
+  {
+   "id": "t-guardia-p",
+   "from": "perdida",
+   "to": "guardia",
+   "label": "adivinar",
+   "variant": "dashed"
+  }
+ ],
+ "cards": [
+  {
+   "dot": "cyan",
+   "title": "Estados",
+   "items": [
+    "EstadoJuego tiene tres valores: EN_CURSO, GANADA y PERDIDA",
+    "Ganar: adivinar acierta la última letra o revelarLetra la completa"
+   ]
+  },
+  {
+   "dot": "amber",
+   "title": "Guardia",
+   "items": [
+    "Tras terminar, adivinar devuelve PARTIDA_TERMINADA",
+    "El estado no cambia y revelarLetra no hace nada"
+   ]
+  },
+  {
+   "dot": "emerald",
+   "title": "Nueva partida",
+   "items": [
+    "Jugar de nuevo crea un objeto Partida nuevo",
+    "Una Partida terminada no vuelve a EN_CURSO"
+   ]
+  }
+ ]
+}

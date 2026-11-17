@@ -1,0 +1,124 @@
+@startuml Diagrama_util
+' Diagrama del paquete util + Main (paquete por defecto).
+' Notacion: + public, - private, {static}, {readOnly} = atributo final.
+title Paquete util y Main - Juego del Ahorcado
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 12
+skinparam ArrowColor #2C3E70
+skinparam class {
+  BackgroundColor #F7F9FF
+  BorderColor #2C3E70
+}
+hide empty members
+
+' Clases de otros paquetes (solo referencia)
+class BancoPalabras <<modelo>>
+class Categoria <<modelo>>
+class Palabra <<modelo>>
+class Partida <<modelo>>
+class Pista <<modelo>>
+class PistaCategoria <<modelo>>
+class PistaLetra <<modelo>>
+class PistaTexto <<modelo>>
+class Dificultad <<modelo>>
+class ControladorJuego <<controlador>>
+interface VistaJuego <<controlador>>
+class VentanaPrincipal <<vista>>
+class PanelAhorcado <<vista>>
+class Estilo <<vista>>
+
+package util {
+
+  class Normalizador <<final>> {
+    -Normalizador()
+    +{static} normalizar(s : String) : String
+    +{static} normalizarLetra(c : char) : char
+    +{static} esLetraValida(c : char) : boolean
+  }
+
+  class VerificadorBanco <<final>> {
+    -{static} TOTAL_ESPERADO : int = 200 {readOnly}
+    -{static} CATEGORIAS_ESPERADAS : int = 8 {readOnly}
+    -{static} POR_CATEGORIA : int = 25 {readOnly}
+    -VerificadorBanco()
+    +{static} main(args : String[]) : void
+  }
+
+  class PruebasAutomaticas <<final>> {
+    -{static} total : int
+    -{static} fallos : int
+    -PruebasAutomaticas()
+    +{static} main(args : String[]) : void
+    -{static} comprobar(nombre : String, condicion : boolean) : void
+    -{static} palabraPrueba(texto : String) : Palabra
+    -{static} pruebasNormalizador() : void
+    -{static} pruebasPalabra() : void
+    -{static} pruebasBanco() : void
+    -{static} pruebasPartida() : void
+    -{static} pruebasPistas() : void
+    -{static} pruebasControlador() : void
+    -{static} pruebasDibujo() : void
+  }
+
+  class "PruebasAutomaticas.VistaFalsa" as VistaFalsa <<private static>> {
+    ~actualizaciones : int
+    ~finales : int
+    ~ultimoMensaje : String
+    +actualizar(partida : Partida) : void
+    +mostrarFin(partida : Partida) : void
+    +mostrarMensaje(mensaje : String) : void
+  }
+
+  class GeneradorCapturas <<final>> {
+    -{static} PALABRA : Palabra {readOnly}
+    -GeneradorCapturas()
+    +{static} main(args : String[]) : void
+    -{static} generar(carpeta : Path) : void
+    -{static} guardar(contenedor : Object, archivo : Path) : void
+  }
+}
+
+class Main {
+  +{static} main(args : String[]) : void
+}
+
+VistaJuego <|.. VistaFalsa
+PruebasAutomaticas +-- VistaFalsa
+
+VerificadorBanco ..> BancoPalabras
+VerificadorBanco ..> Categoria
+VerificadorBanco ..> Dificultad
+PruebasAutomaticas ..> BancoPalabras
+PruebasAutomaticas ..> Partida
+PruebasAutomaticas ..> Palabra
+PruebasAutomaticas ..> Pista
+PruebasAutomaticas ..> PistaCategoria
+PruebasAutomaticas ..> PistaLetra
+PruebasAutomaticas ..> PistaTexto
+PruebasAutomaticas ..> ControladorJuego
+PruebasAutomaticas ..> PanelAhorcado
+PruebasAutomaticas ..> Normalizador
+GeneradorCapturas ..> ControladorJuego
+GeneradorCapturas ..> VentanaPrincipal
+GeneradorCapturas ..> BancoPalabras
+GeneradorCapturas ..> Palabra
+GeneradorCapturas ..> VistaJuego : clase anonima
+GeneradorCapturas ..> Estilo
+Main ..> BancoPalabras
+Main ..> ControladorJuego
+Main ..> VentanaPrincipal
+Main ..> VerificadorBanco
+Main ..> Estilo
+Palabra ..> Normalizador
+Partida ..> Normalizador
+ControladorJuego ..> Normalizador
+VentanaPrincipal ..> Normalizador
+
+note bottom of Normalizador
+  Clase utilitaria: constructor privado y solo metodos estaticos.
+  La usan Palabra, Partida, ControladorJuego y VentanaPrincipal.
+end note
+@enduml

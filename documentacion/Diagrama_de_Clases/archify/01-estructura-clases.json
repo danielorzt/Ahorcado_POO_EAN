@@ -1,0 +1,309 @@
+{
+ "schema_version": 1,
+ "diagram_type": "architecture",
+ "meta": {
+  "title": "Estructura de clases del Ahorcado (MVC)",
+  "output": "01-estructura-clases.html",
+  "quality_profile": "showcase",
+  "viewBox": [
+   1340,
+   720
+  ]
+ },
+ "components": [
+  {
+   "id": "main",
+   "type": "external",
+   "label": "Main",
+   "sublabel": "Punto de entrada",
+   "pos": [
+    40,
+    100
+   ],
+   "size": [
+    140,
+    60
+   ]
+  },
+  {
+   "id": "controlador",
+   "type": "backend",
+   "label": "ControladorJuego",
+   "sublabel": "Coordina vista y modelo",
+   "pos": [
+    250,
+    100
+   ],
+   "size": [
+    200,
+    60
+   ]
+  },
+  {
+   "id": "vistajuego",
+   "type": "messagebus",
+   "label": "VistaJuego",
+   "sublabel": "interface: actualizar, mostrarFin",
+   "tag": "Polimorfismo",
+   "pos": [
+    250,
+    215
+   ],
+   "size": [
+    200,
+    60
+   ]
+  },
+  {
+   "id": "banco",
+   "type": "database",
+   "label": "BancoPalabras",
+   "sublabel": "ArrayList de Categoria → Palabra",
+   "tag": "ArrayList",
+   "pos": [
+    570,
+    100
+   ],
+   "size": [
+    200,
+    60
+   ]
+  },
+  {
+   "id": "palabra",
+   "type": "database",
+   "label": "Palabra",
+   "sublabel": "Inmutable (campos final)",
+   "tag": "Encapsulamiento",
+   "pos": [
+    890,
+    157
+   ],
+   "size": [
+    200,
+    60
+   ]
+  },
+  {
+   "id": "partida",
+   "type": "backend",
+   "label": "Partida",
+   "sublabel": "Estado privado, ArrayList",
+   "tag": "Encapsulamiento",
+   "pos": [
+    570,
+    215
+   ],
+   "size": [
+    200,
+    60
+   ]
+  },
+  {
+   "id": "pista",
+   "type": "backend",
+   "label": "Pista (abstracta)",
+   "sublabel": "3 subclases: Categoria, Letra, Texto",
+   "tag": "Herencia",
+   "pos": [
+    570,
+    330
+   ],
+   "size": [
+    200,
+    60
+   ]
+  },
+  {
+   "id": "normalizador",
+   "type": "cloud",
+   "label": "Normalizador",
+   "sublabel": "normalizarLetra",
+   "pos": [
+    1150,
+    215
+   ],
+   "size": [
+    160,
+    60
+   ]
+  },
+  {
+   "id": "ventana",
+   "type": "frontend",
+   "label": "VentanaPrincipal",
+   "sublabel": "JFrame que implementa VistaJuego",
+   "pos": [
+    250,
+    470
+   ],
+   "size": [
+    200,
+    60
+   ]
+  },
+  {
+   "id": "panelahorcado",
+   "type": "frontend",
+   "label": "PanelAhorcado",
+   "sublabel": "Dibuja con Graphics2D",
+   "pos": [
+    570,
+    470
+   ],
+   "size": [
+    200,
+    60
+   ]
+  },
+  {
+   "id": "otrospaneles",
+   "type": "frontend",
+   "label": "Teclado, Pistas y Estado",
+   "sublabel": "PanelTeclado, PanelPistas, PanelEstado",
+   "pos": [
+    550,
+    590
+   ],
+   "size": [
+    270,
+    60
+   ]
+  },
+  {
+   "id": "partecuerpo",
+   "type": "frontend",
+   "label": "ParteCuerpo (abstracta)",
+   "sublabel": "7 subclases: dibujar(Graphics2D)",
+   "tag": "Herencia + Polimorfismo",
+   "pos": [
+    890,
+    470
+   ],
+   "size": [
+    200,
+    60
+   ]
+  }
+ ],
+ "boundaries": [
+  {
+   "kind": "region",
+   "label": "paquete controlador",
+   "wraps": [
+    "controlador",
+    "vistajuego"
+   ]
+  },
+  {
+   "kind": "region",
+   "label": "paquete modelo",
+   "wraps": [
+    "banco",
+    "palabra",
+    "partida",
+    "pista"
+   ]
+  },
+  {
+   "kind": "region",
+   "label": "paquete util",
+   "wraps": [
+    "normalizador"
+   ]
+  },
+  {
+   "kind": "region",
+   "label": "paquete vista",
+   "wraps": [
+    "ventana",
+    "panelahorcado",
+    "otrospaneles",
+    "partecuerpo"
+   ]
+  }
+ ],
+ "connections": [
+  {
+   "id": "main-ctrl",
+   "from": "main",
+   "to": "controlador",
+   "label": "crea e inicia"
+  },
+  {
+   "id": "ctrl-vista",
+   "from": "controlador",
+   "to": "vistajuego",
+   "label": "notifica",
+   "labelAt": [
+    350,
+    185
+   ]
+  },
+  {
+   "id": "ctrl-banco",
+   "from": "controlador",
+   "to": "banco",
+   "label": "elegirAleatoria"
+  },
+  {
+   "id": "ctrl-partida",
+   "from": "controlador",
+   "to": "partida",
+   "label": "adivinar, usarPista"
+  },
+  {
+   "id": "banco-palabra",
+   "from": "banco",
+   "to": "palabra",
+   "label": "contiene"
+  },
+  {
+   "id": "partida-palabra",
+   "from": "partida",
+   "to": "palabra",
+   "label": "palabra secreta"
+  },
+  {
+   "id": "partida-pista",
+   "from": "partida",
+   "to": "pista",
+   "label": "agrega 3 pistas",
+   "labelAt": [
+    670,
+    300
+   ]
+  },
+  {
+   "id": "partida-norm",
+   "from": "partida",
+   "to": "normalizador",
+   "label": "usa"
+  },
+  {
+   "id": "ventana-vista",
+   "from": "ventana",
+   "to": "vistajuego",
+   "label": "implements",
+   "variant": "dashed"
+  },
+  {
+   "id": "ventana-ahorcado",
+   "from": "ventana",
+   "to": "panelahorcado",
+   "label": "composición"
+  },
+  {
+   "id": "ventana-otros",
+   "from": "ventana",
+   "to": "otrospaneles",
+   "label": "composición"
+  },
+  {
+   "id": "ahorcado-parte",
+   "from": "panelahorcado",
+   "to": "partecuerpo",
+   "label": "lista de partes"
+  }
+ ]
+}

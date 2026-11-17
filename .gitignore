@@ -1,0 +1,31 @@
+# ---- Java: salida de compilación ----
+out/
+bin/
+build/
+target/
+*.class
+*.jar
+
+# ---- Dependencias de las pruebas de interfaz (se descargan con descargar_dependencias.sh) ----
+codigo_fuente/lib_test/
+
+# ---- Entregable empaquetado (se sube a Canvas, no al repositorio) ----
+*.zip
+
+# ---- Archivos temporales y de registro ----
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+hs_err_pid*
+TestResults/
+
+# ---- Editores y sistema operativo ----
+.idea/
+*.iml
+.vscode/
+.vs/
+.DS_Store
+Thumbs.db

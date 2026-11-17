@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Manual de Usuario - Juego del Ahorcado Interactivo con Java Swing</title>
+<style>
+@page { size: Letter; margin: 25.4mm;
+  @top-right { content: counter(page); font: 12pt "Times New Roman", Times, serif; color: #000; } }
+* { box-sizing: border-box; }
+html { font-family: "Times New Roman", Times, serif; color: #000; font-size: 12pt; line-height: 1.5; }
+body { margin: 0; }
+h1 { font-size: 12pt; font-weight: bold; text-align: center; margin: 0 0 12pt; }
+h2 { font-size: 12pt; font-weight: bold; text-align: left; margin: 14pt 0 6pt; }
+h3 { font-size: 12pt; font-weight: bold; font-style: italic; text-align: left; margin: 12pt 0 4pt; }
+h1, h2, h3 { break-after: avoid; }
+p { margin: 0 0 8pt; text-indent: 12.7mm; text-align: left; }
+li p, td p, .nota p, .aviso p, .video p, figure p, .sin-sangria { text-indent: 0; }
+p, li { orphans: 3; widows: 3; }
+section { break-before: auto; margin-top: 18pt; }
+section.pagina, .portada, section.toc-s, #refs { break-before: page; margin-top: 0; }
+section.sin-salto { break-before: auto; }
+code, kbd { font-family: "Courier New", Courier, monospace; }
+kbd { border: 1px solid #777; border-radius: 3px; padding: 0 3pt; font-size: 10.5pt; white-space: nowrap; }
+pre { background: #f2f2f2; color: #000; border: 1px solid #bbb; padding: 6pt 8pt; font-size: 10pt; line-height: 1.3; white-space: pre-wrap; word-break: break-all; break-inside: avoid; text-indent: 0; }
+code { font-size: 10.5pt; }
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 8pt 0 12pt; font-size: 11pt; line-height: 1.3; break-inside: avoid; border-top: 1.5px solid #000; border-bottom: 1.5px solid #000; }
+th { background: none; color: #000; text-align: left; font-weight: bold; padding: 4pt 6pt; border-bottom: 1px solid #000; }
+td { border: 0; padding: 3pt 6pt; vertical-align: top; }
+tr:nth-child(even) td { background: none; }
+figure { margin: 10pt 0; text-align: center; break-inside: avoid; }
+figure img { width: 100%; max-width: 135mm; border: 1px solid #999; }
+figure img.dialogo { width: 70mm; }
+.par { display: flex; gap: 6mm; justify-content: center; }
+.par figure { flex: 1; }
+.par figure img.dialogo { width: 100%; }
+figcaption { font-size: 11pt; font-style: italic; margin-top: 3pt; }
+.nota, .aviso { border-left: 3px solid #666; background: #f5f5f5; padding: 4pt 10pt; margin: 8pt 0; break-inside: avoid; line-height: 1.35; }
+.video { border: 1px solid #000; padding: 6pt 12pt; margin: 14pt 0; text-align: center; break-inside: avoid; }
+.portada { break-before: auto; text-align: center; padding-top: 14mm; line-height: 1.5; }
+.portada img.logo { width: 62mm; display: block; margin: 0 auto 22mm; }
+.portada h1 { font-size: 12pt; margin: 0 0 14mm; }
+.portada p { text-indent: 0; text-align: center; margin: 0 0 2pt; }
+.portada .bloque { margin-bottom: 14mm; }
+.toc { list-style: none; padding: 0; margin: 0; }
+.toc li { display: flex; align-items: baseline; margin: 0; }
+.toc li.n2 { padding-left: 12.7mm; }
+.toc li .pt { flex: 1; border-bottom: 1px dotted #000; margin: 0 4pt; transform: translateY(-3pt); }
+.toc a { color: #000; text-decoration: none; }
+a { color: #000; text-decoration: underline; }
+ol.zonas li { margin-bottom: 4pt; }
+.ref { padding-left: 12.7mm; text-indent: -12.7mm; margin: 0 0 8pt; }
+.ref a { word-break: break-all; }
+</style>
+</head>
+<body>
+
+<section class="portada">
+  <img class="logo" src="logo-ean.png" alt="Logotipo de la Universidad EAN">
+  <h1>Juego del Ahorcado Interactivo con Java Swing:<br>Manual de Usuario</h1>
+  <div class="bloque"><p>Daniel Esteban Ortiz Pinzón</p></div>
+  <div class="bloque">
+    <p>Universidad EAN</p>
+    <p>Programación Orientada a Objetos</p>
+  </div>
+  <div class="bloque"><p>Noviembre de 2026</p></div>
+  <div class="video"><p>Video del proyecto (YouTube): <a href="https://youtu.be/R6azp1shkIs">https://youtu.be/R6azp1shkIs</a></p></div>
+</section>
+
+<section class="toc-s">
+  <h1>Tabla de contenido</h1>
+  <ul class="toc">
+    <li class="n1"><a href="#s1">1. Introducción</a><span class="pt"></span><span class="pg" data-for="s1">3</span></li>
+    <li class="n1"><a href="#s2">2. Requisitos para ejecutar</a><span class="pt"></span><span class="pg" data-for="s2">3</span></li>
+    <li class="n1"><a href="#s3">3. Instalación y ejecución</a><span class="pt"></span><span class="pg" data-for="s3">4</span></li>
+    <li class="n2"><a href="#s3-0">macOS y Linux</a><span class="pt"></span><span class="pg" data-for="s3-0">4</span></li>
+    <li class="n2"><a href="#s3-1">Windows (cmd)</a><span class="pt"></span><span class="pg" data-for="s3-1">4</span></li>
+    <li class="n2"><a href="#s3-2">Crear y ejecutar el JAR (todos los sistemas)</a><span class="pt"></span><span class="pg" data-for="s3-2">4</span></li>
+    <li class="n2"><a href="#s3-3">Verificar el banco de palabras (opcional)</a><span class="pt"></span><span class="pg" data-for="s3-3">4</span></li>
+    <li class="n1"><a href="#s4">4. Cómo jugar</a><span class="pt"></span><span class="pg" data-for="s4">5</span></li>
+    <li class="n1"><a href="#s5">5. Reglas del juego</a><span class="pt"></span><span class="pg" data-for="s5">5</span></li>
+    <li class="n1"><a href="#s6">6. Dificultad y categorías</a><span class="pt"></span><span class="pg" data-for="s6">7</span></li>
+    <li class="n2"><a href="#s6-0">El selector de dificultad</a><span class="pt"></span><span class="pg" data-for="s6-0">7</span></li>
+    <li class="n2"><a href="#s6-1">Las 8 categorías</a><span class="pt"></span><span class="pg" data-for="s6-1">7</span></li>
+    <li class="n2"><a href="#s6-2">Tildes y la letra Ñ</a><span class="pt"></span><span class="pg" data-for="s6-2">7</span></li>
+    <li class="n1"><a href="#s7">7. Las tres pistas</a><span class="pt"></span><span class="pg" data-for="s7">8</span></li>
+    <li class="n1"><a href="#s8">8. Descripción de la pantalla</a><span class="pt"></span><span class="pg" data-for="s8">9</span></li>
+    <li class="n2"><a href="#s8-0">Zonas de la pantalla</a><span class="pt"></span><span class="pg" data-for="s8-0">10</span></li>
+    <li class="n1"><a href="#s9">9. Controles</a><span class="pt"></span><span class="pg" data-for="s9">11</span></li>
+    <li class="n2"><a href="#s9-0">Ratón</a><span class="pt"></span><span class="pg" data-for="s9-0">11</span></li>
+    <li class="n2"><a href="#s9-1">Teclado</a><span class="pt"></span><span class="pg" data-for="s9-1">11</span></li>
+    <li class="n2"><a href="#s9-2">En el cuadro de fin de partida</a><span class="pt"></span><span class="pg" data-for="s9-2">12</span></li>
+    <li class="n1"><a href="#s10">10. Fin de la partida</a><span class="pt"></span><span class="pg" data-for="s10">13</span></li>
+    <li class="n2"><a href="#s10-0">Si ganas</a><span class="pt"></span><span class="pg" data-for="s10-0">13</span></li>
+    <li class="n2"><a href="#s10-1">Si pierdes</a><span class="pt"></span><span class="pg" data-for="s10-1">13</span></li>
+    <li class="n2"><a href="#s10-2">Los botones</a><span class="pt"></span><span class="pg" data-for="s10-2">13</span></li>
+    <li class="n1"><a href="#s11">11. Preguntas frecuentes y solución de problemas</a><span class="pt"></span><span class="pg" data-for="s11">15</span></li>
+    <li class="n1"><a href="#s12">12. Créditos y contacto</a><span class="pt"></span><span class="pg" data-for="s12">16</span></li>
+    <li class="n2"><a href="#s12-0">Integrante</a><span class="pt"></span><span class="pg" data-for="s12-0">16</span></li>
+    <li class="n1"><a href="#refs">Referencias</a><span class="pt"></span><span class="pg" data-for="refs">17</span></li>
+  </ul>
+</section>
+
+<section id="s1" class="pagina">
+  <h1>1. Introducción</h1>
+  <p>Bienvenido al <strong>Juego del Ahorcado Interactivo</strong>, un programa de escritorio hecho con <strong>Java Swing</strong> para el curso de Programación Orientada a Objetos de la Universidad EAN. El computador elige una palabra secreta y tú tratas de descubrirla letra por letra antes de cometer 7 errores.</p>
+  <p>El juego incluye:</p>
+  <ul>
+    <li>Un banco de <strong>200 palabras</strong> repartidas en 8 categorías (25 por categoría).</li>
+    <li>Un selector de <strong>dificultad</strong> (aleatoria, fácil, medio o difícil).</li>
+    <li><strong>Tres pistas</strong> que puedes usar una sola vez cada una por partida.</li>
+    <li>Un <strong>teclado en pantalla</strong> (A–Z y Ñ) y soporte completo del <strong>teclado físico</strong>.</li>
+    <li>Una interfaz que se puede manejar sin ratón, con atajos y teclas de acceso rápido.</li>
+  </ul>
+  <p>El programa se compila y se ejecuta con el JDK de Java, la plataforma oficial de Oracle (s. f.-a), y su interfaz usa la biblioteca gráfica Swing (Oracle, s. f.-b). Este manual explica, paso a paso, cómo instalar, ejecutar y jugar. No necesitas saber programar para seguirlo.</p>
+  <div class="video">Video del proyecto (YouTube): <a href="https://youtu.be/R6azp1shkIs">https://youtu.be/R6azp1shkIs</a></div>
+</section>
+
+<section id="s2">
+  <h1>2. Requisitos para ejecutar</h1>
+  <table>
+    <tr><th>Elemento</th><th>Requisito</th></tr>
+    <tr><td>Java</td><td><strong>JDK 17 o superior</strong> (con <code>javac</code> y <code>java</code> disponibles en el PATH). No se usan librerías externas.</td></tr>
+    <tr><td>Sistema operativo</td><td>Cualquiera con Java: Windows, macOS o Linux.</td></tr>
+    <tr><td>Espacio en disco</td><td>Aproximadamente 10 MB.</td></tr>
+    <tr><td>Pantalla</td><td>Resolución de <strong>900 x 680 o superior</strong> (la ventana abre con ese tamaño; el mínimo permitido es 780 x 600).</td></tr>
+    <tr><td>Entorno gráfico</td><td>Necesario para abrir la ventana del juego.</td></tr>
+  </table>
+  <p>Para comprobar tu versión de Java abre una terminal y escribe:</p>
+<pre><code>javac -version</code></pre>
+  <p>Debe responder <code>javac 17</code> o un número mayor.</p>
+</section>
+
+<section id="s3">
+  <h1>3. Instalación y ejecución</h1>
+  <p>El juego no necesita instalador: se compila una vez y se ejecuta. Abre una terminal, entra a la carpeta del proyecto y ejecuta los comandos de tu sistema. Todos se ejecutan desde la carpeta <code>codigo_fuente</code>.</p>
+
+  <h2 id="s3-0">macOS y Linux</h2>
+<pre><code>cd codigo_fuente
+mkdir -p out
+javac --release 17 -encoding UTF-8 -d out $(find src -name "*.java")
+java -cp out Main</code></pre>
+
+  <h2 id="s3-1">Windows (cmd)</h2>
+<pre><code>cd codigo_fuente
+mkdir out
+dir /s /b src\*.java &gt; fuentes.txt
+javac --release 17 -encoding UTF-8 -d out @fuentes.txt
+java -cp out Main</code></pre>
+  <p>En PowerShell, la compilación se hace así:</p>
+<pre><code>javac --release 17 -encoding UTF-8 -d out (Get-ChildItem -Recurse src -Filter *.java).FullName</code></pre>
+
+  <h2 id="s3-2">Crear y ejecutar el JAR (todos los sistemas)</h2>
+  <p>Si prefieres un único archivo ejecutable, créalo después de compilar (el comando es el mismo en macOS, Linux y Windows):</p>
+<pre><code>jar --create --file ProyectoAhorcado.jar --main-class Main -C out .
+java -jar ProyectoAhorcado.jar</code></pre>
+
+  <h2 id="s3-3">Verificar el banco de palabras (opcional)</h2>
+<pre><code>java -cp out Main --verificar</code></pre>
+  <p>Imprime el total de palabras y el conteo por categoría y por dificultad, y termina sin abrir la ventana.</p>
+  <div class="nota"><strong>Importante:</strong> siempre se compila con <code>-encoding UTF-8</code> para que las tildes y la Ñ se vean bien en la ventana.</div>
+</section>
+
+<section id="s4">
+  <h1>4. Cómo jugar</h1>
+  <p>Al abrir el juego aparece de inmediato una partida lista. Sigue estos pasos:</p>
+  <ol>
+    <li><strong>Elige la dificultad</strong> (opcional) en el selector <em>Dificultad</em> de la barra superior. Por defecto es ALEATORIA. El cambio se aplica a la <em>siguiente</em> partida (al pulsar <em>Nueva partida</em>).</li>
+    <li><strong>Mira la palabra secreta.</strong> Cada letra desconocida aparece como un guion bajo, por ejemplo <code>_ _ A _</code>. Debajo verás la dificultad y el número de letras.</li>
+    <li><strong>Prueba una letra.</strong> Haz clic en una tecla del teclado en pantalla o pulsa la letra en tu teclado físico.</li>
+    <li><strong>Revisa el resultado.</strong> Si la letra está en la palabra, aparece en su lugar y se agrega a <em>Letras correctas</em>. Si no está, se suma a <em>Letras incorrectas</em>, bajan los intentos restantes y se dibuja una parte del ahorcado. La barra de estado inferior te cuenta qué pasó.</li>
+    <li><strong>Pide ayuda si la necesitas.</strong> Tienes tres pistas (categoría, letra y pista escrita), una sola vez cada una.</li>
+    <li><strong>Termina la partida.</strong> Ganas al descubrir todas las letras. Pierdes al llegar a 7 errores. Se abre un cuadro con el resultado y la palabra revelada.</li>
+    <li><strong>Juega otra vez</strong> con <em>Jugar de nuevo</em> o cierra el juego con <em>Salir</em>.</li>
+  </ol>
+  <div class="nota"><strong>Consejo:</strong> empieza por las vocales (A, E, O) y por letras frecuentes como S, R, N y L.</div>
+</section>
+
+<section id="s5">
+  <h1>5. Reglas del juego</h1>
+  <ul>
+    <li>Puedes cometer como máximo <strong>7 errores</strong>. Cada letra que no está en la palabra es un error.</li>
+    <li>La horca (base, poste y viga) está visible desde el inicio.</li>
+  </ul>
+  <p>Cada error dibuja una parte del cuerpo, en este orden exacto:</p>
+  <table>
+    <tr><th>Error</th><th>Parte que se dibuja</th></tr>
+    <tr><td>1.º</td><td>Cabeza</td></tr>
+    <tr><td>2.º</td><td>Torso</td></tr>
+    <tr><td>3.º</td><td>Brazo derecho</td></tr>
+    <tr><td>4.º</td><td>Brazo izquierdo</td></tr>
+    <tr><td>5.º</td><td>Pierna derecha</td></tr>
+    <tr><td>6.º</td><td>Pierna izquierda</td></tr>
+    <tr><td>7.º</td><td>Cuerda (la soga que baja de la viga hasta la cabeza)</td></tr>
+  </table>
+  <p>"Derecho" e "izquierdo" se refieren al lado de la pantalla.</p>
+  <p><strong>Además:</strong></p>
+  <ul>
+    <li>El <strong>7.º error</strong> dibuja la cuerda y termina la partida como <strong>perdida</strong>.</li>
+    <li>Ganas (<strong>partida ganada</strong>) cuando todas las letras de la palabra han sido descubiertas.</li>
+    <li><strong>Las letras repetidas no penalizan:</strong> si pruebas una letra que ya habías jugado, el juego te avisa y no pierdes ningún intento.</li>
+    <li>Las teclas que no son letras (números, símbolos) se ignoran. Una vez terminada la partida, el teclado se desactiva y las teclas ya no tienen efecto.</li>
+    <li>Las <strong>tildes se ignoran</strong>: para jugar la palabra "MURCIÉLAGO" se usa la letra E.</li>
+    <li>Usar la pista de <em>Letra</em> <strong>no cuenta como error</strong>.</li>
+  </ul>
+  <figure>
+    <img style="width:80mm" src="../capturas/05-derrota.png" alt="Ahorcado completo con la cuerda tras el 7.º error">
+    <figcaption>Figura 1. Con el 7.º error aparece la cuerda y la partida se pierde.</figcaption>
+  </figure>
+</section>
+
+<section id="s6">
+  <h1>6. Dificultad y categorías</h1>
+  <h2 id="s6-0">El selector de dificultad</h2>
+  <p>En la barra superior, el selector <em>Dificultad</em> ofrece cuatro opciones: <strong>ALEATORIA</strong>, <strong>FÁCIL</strong>, <strong>MEDIO</strong> y <strong>DIFÍCIL</strong>. La opción elegida se usa cuando empiezas una nueva partida.</p>
+  <table>
+    <tr><th>Opción</th><th>Palabras que puede elegir</th></tr>
+    <tr><td>ALEATORIA</td><td>Cualquier palabra del banco, de cualquier nivel.</td></tr>
+    <tr><td>FÁCIL</td><td>Palabras de <strong>3 a 5 letras</strong>.</td></tr>
+    <tr><td>MEDIO</td><td>Palabras de <strong>6 a 8 letras</strong>.</td></tr>
+    <tr><td>DIFÍCIL</td><td>Palabras de <strong>9 o más letras</strong>.</td></tr>
+  </table>
+  <p>La dificultad depende solo de la <strong>longitud</strong> de la palabra. Dentro del panel <em>Palabra secreta</em> el juego muestra el nivel y el número de letras de la palabra actual. El juego no repite palabras hasta agotar las posibles para el nivel elegido.</p>
+
+  <h2 id="s6-1">Las 8 categorías</h2>
+  <p>El banco tiene <strong>200 palabras</strong>: 8 categorías de 25 palabras cada una.</p>
+  <table>
+    <tr><td>Animales</td><td>Países</td><td>Deportes</td><td>Objetos</td></tr>
+    <tr><td>Comidas</td><td>Profesiones</td><td>Frutas y verduras</td><td>Tecnología</td></tr>
+  </table>
+  <p>Todas las palabras se escriben en mayúsculas y sin espacios.</p>
+
+  <h2 id="s6-2">Tildes y la letra Ñ</h2>
+  <ul>
+    <li>Las <strong>tildes y diéresis no se piden</strong>: Á, É, Í, Ó, Ú y Ü se juegan como A, E, I, O y U. Si escribes una letra con tilde en el teclado físico, el juego la convierte a su letra base.</li>
+    <li>La <strong>Ñ es una letra aparte</strong> y sí se juega: hay una tecla Ñ en pantalla y también funciona desde el teclado físico.</li>
+    <li>Al terminar la partida, la palabra se muestra con sus tildes originales (por ejemplo, MURCIÉLAGO).</li>
+  </ul>
+</section>
+
+<section id="s7">
+  <h1>7. Las tres pistas</h1>
+  <p>En el panel <em>Pistas</em> hay tres botones. Puedes usarlos en cualquier momento de la partida, pero <strong>cada pista solo una vez por partida</strong>. Al usar una, su botón se deshabilita (se ve en gris) y el contador <em>Pistas restantes: N</em> baja. El texto de cada pista queda guardado en el recuadro de pistas obtenidas.</p>
+  <table>
+    <tr><th>Botón</th><th>Qué hace</th><th>Texto que verás</th></tr>
+    <tr><td><strong>Categoría</strong></td><td>Dice a qué categoría pertenece la palabra secreta.</td><td><code>Categoría: Animales</code></td></tr>
+    <tr><td><strong>Letra</strong></td><td>Revela una letra al azar de la palabra que aún no hayas descubierto. <strong>No cuenta como error.</strong></td><td><code>Se reveló la letra: X</code></td></tr>
+    <tr><td><strong>Pista escrita</strong></td><td>Muestra una frase de ayuda propia de esa palabra.</td><td>Una frase corta, con tildes.</td></tr>
+  </table>
+  <figure>
+    <img src="../capturas/03-pista-categoria.png" alt="Pantalla tras usar la pista de categoría">
+    <figcaption>Figura 2. Tras usar <em>Categoría</em>: el botón queda deshabilitado, "Pistas restantes" baja a 2 y la pista aparece en el recuadro y en la barra de estado.</figcaption>
+  </figure>
+  <div class="aviso"><strong>Atención:</strong> cuando la partida termina, los tres botones de pista se deshabilitan. Al empezar una partida nueva vuelven a estar disponibles.</div>
+  <p>Teclas de acceso rápido: <kbd>Alt</kbd>+<kbd>C</kbd> (Categoría), <kbd>Alt</kbd>+<kbd>L</kbd> (Letra) y <kbd>Alt</kbd>+<kbd>E</kbd> (Pista escrita). Ver la sección 9.</p>
+</section>
+
+<section id="s8">
+  <h1>8. Descripción de la pantalla</h1>
+  <p>La ventana se llama "Juego del Ahorcado - Universidad EAN". La captura muestra el contenido de la ventana al empezar y durante una partida.</p>
+  <figure>
+    <img src="../capturas/01-inicio.png" alt="Pantalla de inicio del juego">
+    <figcaption>Figura 3. Pantalla de inicio: partida nueva, sin errores.</figcaption>
+  </figure>
+  <figure>
+    <img src="../capturas/02-partida-en-curso.png" alt="Partida en curso con tres errores">
+    <figcaption>Figura 4. Partida en curso con tres errores (cabeza, torso y brazo derecho).</figcaption>
+  </figure>
+  <h2 id="s8-0">Zonas de la pantalla</h2>
+  <ol class="zonas">
+    <li><strong>Barra de menú</strong> (en la parte superior de la ventana, encima del título; no sale en las capturas). Tiene el menú <em>Juego</em> (Nueva partida, Salir) y el menú <em>Ayuda</em> (Cómo jugar).</li>
+    <li><strong>Barra azul superior:</strong> título "AHORCADO" y, a la derecha, el <strong>selector de dificultad</strong> (ALEATORIA, FÁCIL, MEDIO, DIFÍCIL) y los botones <em>Nueva partida</em> y <em>Cómo jugar</em>.</li>
+    <li><strong>Panel Ahorcado</strong> (izquierda): la horca y el muñeco. Las partes del cuerpo van apareciendo con cada error.</li>
+    <li><strong>Panel Palabra secreta</strong> (arriba a la derecha): la palabra con guiones bajos para las letras que faltan, por ejemplo <code>M _ _ _ E _ A _ _</code>.</li>
+    <li><strong>Letras correctas</strong> (en verde): las letras acertadas, o "ninguna" si aún no hay.</li>
+    <li><strong>Letras incorrectas</strong> (en rojo): las letras que fallaste, o "ninguna".</li>
+    <li><strong>Intentos restantes</strong>: por ejemplo "4 de 7". También se muestra la dificultad y la longitud de la palabra.</li>
+    <li><strong>Panel Pistas</strong> (centro derecha): "Pistas restantes: N", los tres botones <em>Categoría</em>, <em>Letra</em> y <em>Pista escrita</em>, y un recuadro de solo lectura con las pistas que ya usaste.</li>
+    <li><strong>Panel Teclado</strong> (abajo a la derecha): 27 teclas, de la A a la Z incluyendo la Ñ, en 3 filas. Las letras ya jugadas se ponen en gris.</li>
+    <li><strong>Barra de estado</strong> (franja inferior): mensajes del juego, por ejemplo "La letra K no está. Intentos restantes: 4."</li>
+  </ol>
+</section>
+
+<section id="s9">
+  <h1>9. Controles</h1>
+  <p>Todo el juego se puede manejar con el ratón o solo con el teclado.</p>
+  <h2 id="s9-0">Ratón</h2>
+  <table>
+    <tr><th>Acción</th><th>Cómo hacerla</th></tr>
+    <tr><td>Probar una letra</td><td>Clic en la tecla del teclado en pantalla.</td></tr>
+    <tr><td>Usar una pista</td><td>Clic en <em>Categoría</em>, <em>Letra</em> o <em>Pista escrita</em>.</td></tr>
+    <tr><td>Cambiar la dificultad</td><td>Clic en el selector <em>Dificultad</em> y elegir una opción.</td></tr>
+    <tr><td>Nueva partida / Ayuda</td><td>Clic en los botones <em>Nueva partida</em> y <em>Cómo jugar</em>, o en el menú <em>Juego</em> y <em>Ayuda</em>.</td></tr>
+  </table>
+  <h2 id="s9-1">Teclado</h2>
+  <table>
+    <tr><th>Tecla</th><th>Acción</th></tr>
+    <tr><td><kbd>A</kbd> a <kbd>Z</kbd> y <kbd>Ñ</kbd></td><td>Prueba esa letra en cualquier momento, sin importar qué botón tenga el foco. Las letras con tilde se toman como su letra base.</td></tr>
+    <tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Mueve el foco hacia adelante / atrás. Orden: Dificultad, Nueva partida, Cómo jugar, las tres pistas y las teclas A–Z, Ñ. Se saltan los botones deshabilitados.</td></tr>
+    <tr><td><kbd>Enter</kbd> o <kbd>Espacio</kbd></td><td>Activa el botón que tiene el foco (tecla, pista, Nueva partida, etc.).</td></tr>
+    <tr><td><kbd>Ctrl</kbd>+<kbd>N</kbd></td><td>Nueva partida (menú Juego).</td></tr>
+    <tr><td><kbd>Ctrl</kbd>+<kbd>Q</kbd></td><td>Salir del juego (menú Juego).</td></tr>
+    <tr><td><kbd>F1</kbd></td><td>Cómo jugar (menú Ayuda).</td></tr>
+    <tr><td><kbd>Alt</kbd>+<kbd>J</kbd></td><td>Abre el menú <em>Juego</em>. Dentro: <kbd>N</kbd> Nueva partida, <kbd>S</kbd> Salir.</td></tr>
+    <tr><td><kbd>Alt</kbd>+<kbd>A</kbd></td><td>Abre el menú <em>Ayuda</em>. Dentro: <kbd>C</kbd> Cómo jugar.</td></tr>
+    <tr><td><kbd>Alt</kbd>+<kbd>D</kbd></td><td>Lleva el foco al selector de Dificultad.</td></tr>
+    <tr><td><kbd>Alt</kbd>+<kbd>N</kbd></td><td>Botón <em>Nueva partida</em>.</td></tr>
+    <tr><td><kbd>Alt</kbd>+<kbd>M</kbd></td><td>Botón <em>Cómo jugar</em>.</td></tr>
+    <tr><td><kbd>Alt</kbd>+<kbd>C</kbd> / <kbd>Alt</kbd>+<kbd>L</kbd> / <kbd>Alt</kbd>+<kbd>E</kbd></td><td>Pistas <em>Categoría</em> / <em>Letra</em> / <em>Pista escrita</em>.</td></tr>
+  </table>
+  <div class="aviso"><strong>Nota para macOS:</strong> según el aspecto visual de Java, la tecla de acceso rápido (mnemónico) puede requerir <kbd>Control</kbd>+<kbd>Opción</kbd> en lugar de <kbd>Alt</kbd>. Las combinaciones con <kbd>Ctrl</kbd> (aceleradores) son las que se muestran en el menú.</div>
+  <h2 id="s9-2">En el cuadro de fin de partida</h2>
+  <table>
+    <tr><th>Tecla</th><th>Acción</th></tr>
+    <tr><td><kbd>Enter</kbd></td><td>Pulsa el botón por defecto: <em>Jugar de nuevo</em>.</td></tr>
+    <tr><td><kbd>Alt</kbd>+<kbd>J</kbd> / <kbd>Alt</kbd>+<kbd>S</kbd></td><td><em>Jugar de nuevo</em> / <em>Salir</em>.</td></tr>
+    <tr><td><kbd>Esc</kbd></td><td>Cierra el cuadro sin hacer nada más (luego puedes usar <em>Nueva partida</em>).</td></tr>
+  </table>
+</section>
+
+<section id="s10">
+  <h1>10. Fin de la partida</h1>
+  <p>La partida termina cuando descubres toda la palabra (victoria) o cuando llegas a 7 errores (derrota). En ese momento el teclado y las pistas se desactivan y se abre un cuadro con el resultado.</p>
+  <h2 id="s10-0">Si ganas</h2>
+  <p>El cuadro dice <strong>"¡Ganaste!"</strong> en verde, muestra la palabra revelada, el número de errores y la categoría.</p>
+  <h2 id="s10-1">Si pierdes</h2>
+  <p>El cuadro dice <strong>"¡Perdiste!"</strong> en rojo y revela la palabra que no pudiste adivinar, con el número de errores (7 de 7) y la categoría.</p>
+  <div class="par">
+    <figure><img class="dialogo" src="../capturas/06-dialogo-victoria.png" alt="Diálogo de victoria"><figcaption>Figura 5. Cuadro de victoria.</figcaption></figure>
+    <figure><img class="dialogo" src="../capturas/07-dialogo-derrota.png" alt="Diálogo de derrota"><figcaption>Figura 6. Cuadro de derrota.</figcaption></figure>
+  </div>
+  <h2 id="s10-2">Los botones</h2>
+  <ul>
+    <li><strong>Jugar de nuevo:</strong> cierra el cuadro e inicia una partida nueva con la dificultad que esté elegida en el selector.</li>
+    <li><strong>Salir:</strong> cierra el juego.</li>
+  </ul>
+  <figure>
+    <img src="../capturas/04-victoria.png" alt="Pantalla de victoria">
+    <figcaption>Figura 7. Pantalla al ganar: palabra completa, teclado y pistas desactivados.</figcaption>
+  </figure>
+  <figure>
+    <img src="../capturas/05-derrota.png" alt="Pantalla de derrota">
+    <figcaption>Figura 8. Pantalla al perder: muñeco completo con la cuerda y teclado desactivado.</figcaption>
+  </figure>
+</section>
+
+<section id="s11">
+  <h1>11. Preguntas frecuentes y solución de problemas</h1>
+
+  <h2 id="s11-0">"java" o "javac" no se reconoce como comando</h2>
+  <p>Java no está instalado o no está en el PATH. Instala un JDK 17 o superior, cierra y vuelve a abrir la terminal y comprueba con <code>javac -version</code>.</p>
+
+  <h2 id="s11-1">Error de versión al compilar o ejecutar (por ejemplo "release version 17 not supported" o "UnsupportedClassVersionError")</h2>
+  <p>Tu JDK es anterior a la versión 17. Actualiza el JDK a 17 o superior. Si tienes varias versiones instaladas, revisa que <code>java -version</code> y <code>javac -version</code> muestren 17 o más.</p>
+
+  <h2 id="s11-2">Las tildes o la Ñ se ven mal en la consola de Windows</h2>
+  <p>Es un tema de la consola, no del juego. Compila siempre con <code>-encoding UTF-8</code>. Para ver bien la salida en la consola, ejecuta <code>chcp 65001</code> antes de correr el programa. La ventana del juego no se ve afectada.</p>
+
+  <h2 id="s11-3">La ventana no recibe las teclas</h2>
+  <p>Haz clic dentro de la ventana del juego para que sea la ventana activa. Las letras solo se aceptan cuando la ventana principal está activa y la partida está en curso; no funcionan mientras haya un cuadro abierto (por ejemplo "Cómo jugar" o el de fin de partida) ni con <kbd>Ctrl</kbd>, <kbd>Alt</kbd> o <kbd>Cmd</kbd> pulsadas.</p>
+
+  <h2 id="s11-4">No aparece una letra o el teclado está en gris</h2>
+  <ul>
+    <li>Una tecla en gris es una letra que <strong>ya jugaste</strong>; no se puede repetir.</li>
+    <li>Si todo el teclado está en gris, la partida <strong>ya terminó</strong>: pulsa <em>Nueva partida</em> (o <kbd>Ctrl</kbd>+<kbd>N</kbd>).</li>
+  </ul>
+
+  <h2 id="s11-5">Escribí una letra y no pasó nada</h2>
+  <p>Solo se aceptan las letras de la A a la Z y la Ñ. Números y símbolos se ignoran. Si el mensaje de la barra de estado dice "Solo se aceptan letras de la A a la Z y la Ñ", la tecla no era válida.</p>
+
+  <h2 id="s11-6">Un botón de pista no responde</h2>
+  <p>Cada pista se puede usar una sola vez por partida y el botón se deshabilita al usarla. Vuelve a estar disponible en la partida siguiente.</p>
+
+  <h2 id="s11-7">Cambié la dificultad pero la palabra sigue igual</h2>
+  <p>La dificultad se aplica a la <strong>próxima</strong> partida. Pulsa <em>Nueva partida</em> después de elegirla.</p>
+
+  <h2 id="s11-8">La ventana se ve cortada</h2>
+  <p>Necesitas una pantalla de al menos 900 x 680. La ventana puede redimensionarse, pero no por debajo de 780 x 600.</p>
+
+  <h2 id="s11-9">Quiero cerrar el juego</h2>
+  <p>Usa el menú <em>Juego &gt; Salir</em>, <kbd>Ctrl</kbd>+<kbd>Q</kbd> o la X de la ventana.</p>
+</section>
+
+<section id="s12">
+  <h1>12. Créditos y contacto</h1>
+  <p><strong>Proyecto:</strong> Juego del Ahorcado Interactivo con Java Swing<br>
+  <strong>Curso:</strong> Programación Orientada a Objetos<br>
+  <strong>Institución:</strong> Universidad EAN<br>
+  <strong>Fecha:</strong> noviembre de 2026</p>
+  <h2 id="s12-0">Integrante</h2>
+  <table>
+    <tr><th>Integrante</th><th>Repositorio del proyecto</th></tr>
+    <tr><td>Daniel Esteban Ortiz Pinzón</td><td><a href="https://github.com/danielorzt/Ahorcado_POO_EAN">github.com/danielorzt/Ahorcado_POO_EAN</a></td></tr>
+  </table>
+  <p>Hecho solo con el JDK de Java (sin librerías externas), usando Java Swing para la interfaz.</p>
+</section>
+
+<section id="refs">
+  <h1>Referencias</h1>
+  <p class="ref">Oracle. (s. f.-a). <em>Java Platform, Standard Edition documentation</em>. https://docs.oracle.com/en/java/javase/17/</p>
+  <p class="ref">Oracle. (s. f.-b). <em>Creating a GUI with Swing</em>. En <em>The Java tutorials</em>. https://docs.oracle.com/javase/tutorial/uiswing/</p>
+  <p class="ref">Ortiz Pinzón, D. E. (2026). <em>Ahorcado_POO_EAN: Juego del ahorcado con Java Swing</em> [Código fuente]. GitHub. https://github.com/danielorzt/Ahorcado_POO_EAN</p>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,188 @@
+@startuml Diagrama_modelo
+' Diagrama del paquete modelo (logica del juego, sin Swing).
+' Notacion: + public, - private, # protegido, ~ paquete, {static}, {abstract},
+' {readOnly} = atributo final.
+title Paquete modelo - Juego del Ahorcado
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 12
+skinparam ArrowColor #2C3E70
+skinparam class {
+  BackgroundColor #F7F9FF
+  BorderColor #2C3E70
+}
+skinparam note {
+  BackgroundColor #FFF8DC
+  BorderColor #B8860B
+}
+hide empty members
+
+package modelo {
+
+  enum Dificultad <<enumeration>> {
+    FACIL
+    MEDIO
+    DIFICIL
+    -etiqueta : String {readOnly}
+    -Dificultad(etiqueta : String)
+    +getEtiqueta() : String
+    +{static} paraLongitud(longitud : int) : Dificultad
+    +toString() : String
+  }
+
+  enum EstadoJuego <<enumeration>> {
+    EN_CURSO
+    GANADA
+    PERDIDA
+  }
+
+  enum ResultadoLetra <<enumeration>> {
+    ACERTADA
+    FALLADA
+    REPETIDA
+    INVALIDA
+    PARTIDA_TERMINADA
+  }
+
+  class Palabra <<final>> {
+    -texto : String {readOnly}
+    -textoOriginal : String {readOnly}
+    -pista : String {readOnly}
+    -categoria : String {readOnly}
+    -dificultad : Dificultad {readOnly}
+    +Palabra(textoOriginal : String, pista : String, categoria : String)
+    +getTexto() : String
+    +getTextoOriginal() : String
+    +getPista() : String
+    +getCategoria() : String
+    +getDificultad() : Dificultad
+    +longitud() : int
+    +contiene(letra : char) : boolean
+    +equals(otro : Object) : boolean
+    +hashCode() : int
+    +toString() : String
+  }
+
+  class Categoria {
+    -nombre : String
+    -palabras : ArrayList<Palabra>
+    +Categoria(nombre : String)
+    +agregar(p : Palabra) : void
+    +getPalabras() : ArrayList<Palabra>
+    +obtenerPorDificultad(d : Dificultad) : ArrayList<Palabra>
+    +tamano() : int
+    +getNombre() : String
+  }
+
+  class BancoPalabras {
+    -categorias : ArrayList<Categoria>
+    -usadas : ArrayList<Palabra>
+    -azar : Random
+    +BancoPalabras()
+    -buscarOCrearCategoria(nombre : String) : Categoria
+    +elegirAleatoria(dificultad : Dificultad) : Palabra
+    +totalPalabras() : int
+    +getCategorias() : ArrayList<Categoria>
+    +resumenPorCategoria() : String
+    +contarPorDificultad(d : Dificultad) : int
+    +contiene(textoNormalizado : String) : boolean
+  }
+
+  class DatosPalabras <<final>> <<paquete-privada>> {
+    ~{static} DATOS : String[][] {readOnly}
+    -DatosPalabras()
+  }
+
+  abstract class Pista <<abstract>> {
+    -nombre : String {readOnly}
+    -descripcion : String {readOnly}
+    -usada : boolean
+    #Pista(nombre : String, descripcion : String)
+    +usar(partida : Partida) : String
+    +{abstract} obtener(partida : Partida) : String
+    +isUsada() : boolean
+    +getNombre() : String
+    +getDescripcion() : String
+  }
+
+  class PistaCategoria {
+    +PistaCategoria()
+    +obtener(p : Partida) : String
+  }
+
+  class PistaLetra {
+    -azar : Random {readOnly}
+    +PistaLetra()
+    +obtener(p : Partida) : String
+  }
+
+  class PistaTexto {
+    +PistaTexto()
+    +obtener(p : Partida) : String
+  }
+
+  class Partida {
+    +{static} MAX_ERRORES : int = 7 {readOnly}
+    -palabraSecreta : Palabra
+    -letrasCorrectas : ArrayList<Character>
+    -letrasIncorrectas : ArrayList<Character>
+    -pistas : ArrayList<Pista>
+    -pistasObtenidas : ArrayList<String>
+    -estado : EstadoJuego
+    +Partida(palabra : Palabra)
+    +adivinar(letra : char) : ResultadoLetra
+    +revelarLetra(letra : char) : void
+    +usarPista(indice : int) : String
+    +pistaDisponible(indice : int) : boolean
+    +pistasRestantes() : int
+    +getErrores() : int
+    +intentosRestantes() : int
+    +palabraOculta() : String
+    +estaCompleta() : boolean
+    +getPalabra() : Palabra
+    +getEstado() : EstadoJuego
+    +getLetrasCorrectas() : ArrayList<Character>
+    +getLetrasIncorrectas() : ArrayList<Character>
+    +getPistasObtenidas() : ArrayList<String>
+    -actualizarEstado() : void
+  }
+}
+
+' Clase de otro paquete (solo referencia; ver Diagrama_util.puml)
+class Normalizador <<final>> <<util>>
+
+' Herencia
+Pista <|-- PistaCategoria
+Pista <|-- PistaLetra
+Pista <|-- PistaTexto
+
+' Asociaciones con multiplicidad
+BancoPalabras "1" *-- "8" Categoria : categorias
+Categoria "1" *-- "25" Palabra : palabras
+BancoPalabras "1" o-- "0..200" Palabra : usadas
+Palabra "*" --> "1" Dificultad : dificultad
+Partida "1" *-- "3" Pista : pistas
+Partida "1" --> "1" Palabra : palabraSecreta
+Partida "1" --> "1" EstadoJuego : estado
+
+' Dependencias
+BancoPalabras ..> DatosPalabras : lee DATOS
+BancoPalabras ..> Dificultad
+Partida ..> ResultadoLetra : devuelve
+Pista ..> Partida : usar(partida)
+Palabra ..> Normalizador
+Partida ..> Normalizador
+
+note top of BancoPalabras
+  Las multiplicidades 8 y 25 NO estan fijas en el codigo
+  (las listas son ArrayList): salen de los datos de
+  DatosPalabras.DATOS = 200 palabras (8 categorias x 25).
+end note
+
+note right of Partida
+  3 pistas = PistaCategoria, PistaLetra y PistaTexto
+  (indices 0, 1 y 2). MAX_ERRORES = 7.
+end note
+@enduml
